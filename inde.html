@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101923">
+  <title>AZIMUTE | Navegação Operacional</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #101923;
+      color: #e8edf2;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 24px;
+      background: #172431;
+      border-bottom: 1px solid #344555;
+    }
+
+    .brand {
+      color: #d9b45b;
+      font-size: 27px;
+      font-weight: bold;
+      letter-spacing: 4px;
+    }
+
+    .subtitle {
+      color: #9baab8;
+      font-size: 12px;
+      margin-top: 7px;
+      letter-spacing: 2px;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    .welcome {
+      margin-bottom: 28px;
+    }
+
+    .welcome h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .welcome p {
+      color: #9baab8;
+      line-height: 1.6;
+    }
+
+    .search {
+      width: 100%;
+      padding: 17px;
+      background: #1d2b39;
+      border: 1px solid #45596b;
+      border-radius: 8px;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      margin-bottom: 25px;
+    }
+
+    .search:focus {
+      border-color: #d9b45b;
+    }
+
+    .section-title {
+      color: #d9b45b;
+      font-size: 13px;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .card {
+      background: #1d2b39;
+      border: 1px solid #344555;
+      border-radius: 9px;
+      padding: 22px;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .card:hover {
+      border-color: #d9b45b;
+      transform: translateY(-2px);
+    }
+
+    .card .symbol {
+      font-size: 25px;
+      margin-bottom: 15px;
+    }
+
+    .card h3 {
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: #9baab8;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    #resultado {
+      color: #d9b45b;
+      margin: 15px 0;
+      font-size: 13px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 15px;
+      color: #778897;
+      font-size: 11px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="brand">AZIMUTE</div>
+    <div class="subtitle">NAVEGAÇÃO E CONSULTA</div>
+  </header>
+
+  <main>
+
+    <section class="welcome">
+      <h1>Central de Consulta</h1>
+      <p>
+        Sistema de consulta geográfica e informações
+        territoriais. Selecione uma categoria para começar.
+      </p>
+    </section>
+
+    <input
+      class="search"
+      id="busca"
+      type="search"
+      placeholder="Pesquisar unidade, endereço ou local..."
+    >
+
+    <div class="section-title">CATEGORIAS</div>
+
+    <div class="grid" id="categorias">
+
+      <div class="card" data-search="batalhões unidades">
+        <div class="symbol">⌖</div>
+        <h3>Batalhões</h3>
+        <p>Consulta de unidades e áreas de responsabilidade.</p>
+      </div>
+
+      <div class="card" data-search="companhias cias">
+        <div class="symbol">▦</div>
+        <h3>Companhias</h3>
+        <p>Organização territorial e unidades subordinadas.</p>
+      </div>
+
+      <div class="card" data-search="bairros localidades">
+        <div class="symbol">◈</div>
+        <h3>Bairros</h3>
+        <p>Consulta de localidades e referências geográficas.</p>
+      </div>
+
+      <div class="card" data-search="hospitais saúde">
+        <div class="symbol">✚</div>
+        <h3>Hospitais</h3>
+        <p>Consulta de unidades de saúde e atendimento.</p>
+      </div>
+
+      <div class="card" data-search="delegacias polícia">
+        <div class="symbol">▤</div>
+        <h3>Delegacias</h3>
+        <p>Consulta de endereços de unidades públicas.</p>
+      </div>
+
+      <div class="card" data-search="apoio abastecimento">
+        <div class="symbol">⌖</div>
+        <h3>Pontos de apoio</h3>
+        <p>Referências públicas e serviços de apoio.</p>
+      </div>
+
+    </div>
+
+    <div id="resultado"></div>
+
+  </main>
+
+  <footer>
+    AZIMUTE · SISTEMA DE CONSULTA GEOGRÁFICA
+    <br><br>
+    Versão 0.1 · Projeto em desenvolvimento
+  </footer>
+
+  <script>
+    const busca = document.getElementById("busca");
+    const cards = document.querySelectorAll(".card");
+    const resultado = document.getElementById("resultado");
+
+    busca.addEventListener("input", () => {
+      const termo = busca.value.toLowerCase().trim();
+      let encontrados = 0;
+
+      cards.forEach(card => {
+        const texto = (
+          card.innerText + " " + card.dataset.search
+        ).toLowerCase();
+
+        const corresponde = texto.includes(termo);
+
+        card.style.display = corresponde ? "" : "none";
+
+        if (corresponde) encontrados++;
+      });
+
+      resultado.textContent = termo
+        ? encontrados + " categoria(s) encontrada(s)."
+        : "";
+    });
+  </script>
+
+</body>
+</html>
